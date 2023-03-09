@@ -7,6 +7,8 @@ import sys
 
 sys.argv
 numTimes = 5
+if len(sys.argv) < 2:
+    quit()
 if len(sys.argv) >= 2:
     search = sys.argv[1]
 if len(sys.argv) == 3:
@@ -22,7 +24,7 @@ while counter < numTimes:
         newLink = driver.find_element("id", "mntl-card-list-items_1-0").get_attribute("href")
     else:
         newLink = driver.find_element("id", "mntl-card-list-items_1-0-" + str(numReference)).get_attribute("href")
-    if newLink.find("article") > 0 or newLink.find("longform") > 0 or newLink.find("gallery") > 0:
+    if not newLink.find("/recipe/") > 0:
         numReference = numReference + 1
     else:
         secondTab = requests.get(newLink)
@@ -40,7 +42,7 @@ while counter < numTimes:
         if infoResults.text is not None:
             infoResults = infoResults.text
             infoResults = infoResults.replace("\n", "").replace("Jump to Nutrition Facts", "")
-            infoResults = infoResults.replace(":", ": ").replace("mins", "mins\n")
+            infoResults = infoResults.replace(":", ": ").replace("mins", "mins\n").replace("hrsS", "hrs\nS").replace("hrsT", "hrs\nT")
             infoResults = infoResults.replace("Yield: ", "\nYield: ")
         # Putting Info Into File
         file = open(titleResults + ".txt", "a")
